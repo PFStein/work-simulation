@@ -13,13 +13,4 @@ export class AppService {
     const users = await db.selectFrom('users').selectAll().execute();
     return JSON.stringify(users);
   }
-
-  async getTranscript(): Promise<string> {
-    const transcriptPath = path.join(__dirname, '..', 'data', 'transcript.txt');
-    try {
-      return await fs.readFile(transcriptPath, 'utf-8');
-    } catch {
-      throw new Error('Failed to read transcript file');
-    }
-  }
 }
