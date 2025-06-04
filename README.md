@@ -23,6 +23,15 @@ The project consists of:
    ```
 4. Visit [localhost:5173](http://localhost:5173) to verify the application is running
 
+> **🔑 Note**  
+> You'll need to set an `OPENAI_API_KEY` in your environment for the backend to function properly.  
+>  
+> You can do this by creating a `.env` file in the `api/` directory:
+>
+> ```env
+> OPENAI_API_KEY=sk-...
+> ```
+
 ## Available Scripts
 
 In the API directory:
