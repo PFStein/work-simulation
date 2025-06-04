@@ -121,34 +121,16 @@ User asks question
 To evolve this prototype into a more production-ready system, I’d extend both the backend and frontend in the following ways:
 
 #### API Enhancements
-##### Message history and threading
 - Store previous Q&A interactions to support context-aware follow-up questions (chat-style memory).
-
-##### Transcript-level summarization + indexing
 - Embed full-session summaries in addition to per-chunk embeddings to support hierarchical retrieval.
-
-##### Multi-patient and conversation support
 - Expand schema to associate multiple transcripts with distinct patients and conversations, with optional metadata (session date, tags, clinician ID, etc.).
-
-##### Prompt routing / dynamic RAG orchestration
 - Swap out the hardcoded prompt template for a system that selects or adapts prompts based on question type, chunk context, or speaker intent.
-
-##### Tool usage & function calling (optional)
 - For more complex interactions, explore LangChain’s tool-using agents for follow-up or clarification queries.
 
 
 #### Client Enhancements
-##### Streaming response support
 - Stream token-by-token output to the UI using Server-Sent Events (SSE) or WebSockets for faster perceived performance on long completions.
-
-##### More flexible file import
 - Support .docx, .pdf, or even .csv if therapists are exporting from EHRs or notetaking tools.
-
-##### Editable conversation view
 - Allow clinicians to annotate or correct quotes in the UI (e.g. labeling missed speaker switches, marking sensitive moments).
-
-##### Quote highlighting + source linking
 - Visually link the agent’s quote references back to their original transcript chunk with highlighting or click-to-jump behavior.
-
-##### Mobile-friendly layout
 - Improve responsiveness for clinicians or users reviewing transcripts on tablets or phones.
