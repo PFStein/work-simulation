@@ -153,3 +153,24 @@ To evolve this prototype into a more production-ready system, I’d extend both 
 - Allow clinicians to annotate or correct quotes in the UI (e.g. labeling missed speaker switches, marking sensitive moments).
 - Visually link the agent’s quote references back to their original transcript chunk with highlighting or click-to-jump behavior.
 - Improve responsiveness for clinicians or users reviewing transcripts on tablets or phones.
+
+---
+
+### References & Resources
+
+This project draws on a range of tools and concepts from the AI, web, and database ecosystems. Below are some of the key references that informed the design and implementation.
+
+#### RAG & AI Concepts
+- [Understanding Recursive Character Text Splitting](https://medium.com/@developer.yasir.pk/understanding-recursive-character-text-splitting-8419518db6f4) — Deep dive on LangChain’s `RecursiveCharacterTextSplitter`
+- [RAG Architectures in Practice (Humanloop)](https://humanloop.com/blog/rag-architectures) — Real-world approaches to Retrieval-Augmented Generation
+- [Semantic Topic Change Detection (Jupyter Notebook)](https://github.com/aurelio-labs/cookbook/blob/main/semantic-analysis/semantic-topic-change.ipynb) — Insights into transcript segmentation and topic shifts
+
+#### Frameworks & Libraries
+- [NestJS Documentation](https://docs.nestjs.com/) — Progressive Node.js backend framework used for API
+- [React Documentation](https://react.dev/) — Building block of the frontend interface
+- [Chakra UI](https://chakra-ui.com/) — Component library used for accessible and responsive UI
+
+#### Databases & ORM
+- [pgvector (GitHub)](https://github.com/pgvector/pgvector) — Vector similarity extension for PostgreSQL
+- [node-postgres](https://node-postgres.com/) — PostgreSQL client for Node.js
+- [Kysely](https://kysely.dev/) — Type-safe SQL query builder used for migrations and queries
