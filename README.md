@@ -23,9 +23,17 @@ The project consists of:
    ```
 4. Visit [localhost:5173](http://localhost:5173) to verify the application is running
 
-## The Challenge
+## Available Scripts
 
-Your task is to create a simple AI agent that can answer questions about the contents of a provided transcript. The transcript will be available in the `api/data/transcript.txt` file.
+In the API directory:
+- `npm run dev` - Start the development server
+- `npm run migration:up` - Run database migrations
+- `npm run test` - Run tests
+
+In the Client directory:
+- `npm run dev` - Start the development server
+- `npm run build` - Build for production
+- `npm run test` - Run tests
 
 ### Requirements
 
@@ -39,43 +47,110 @@ Your task is to create a simple AI agent that can answer questions about the con
    - Allow users to ask questions
    - Show the agent's responses
 
-### Evaluation Criteria
 
-Your solution will be evaluated on:
-- Code organization and quality
-- Implementation of the AI agent
-- User interface design and experience
-- Error handling and edge cases
-- Documentation and comments
+### Project Summary
 
-### Time Expectations
+This project implements a lightweight Retrieval-Augmented Generation (RAG) system designed to answer questions about therapy transcripts. Transcripts are uploaded via a file interface, chunked into speaker-labeled segments, embedded using OpenAI's embedding model, and stored in a Postgres database with pgvector. At query time, a user can ask a question via a simple chat interface; relevant chunks are retrieved by vector similarity and passed to a language model (via LangChain) to synthesize a speaker-aware response with direct quote attribution.
 
-Plan to spend about 4 hours to complete this exercise. Focus on delivering a working solution that demonstrates your understanding of AI concepts and software engineering principles.
 
-## Project Structure
+![Hosted Image](agent-in-action.png)
 
-- `/api` - Backend Node.js application
-- `/client` - Frontend React application
-- `/api/data` - Contains the transcript file
-- `docker-compose.yml` - Docker configuration for all services
 
-## Available Scripts
+### Design Goals
 
-In the API directory:
-- `npm run dev` - Start the development server
-- `npm run migration:up` - Run database migrations
-- `npm run test` - Run tests
+- Keep the system modular and easy to extend
+- Provide grounded, quote-backed answers (not hallucinated summaries)
+- Preserve speaker identity and temporal structure during chunking
+- Make the developer experience straightforward (no complex pipelines)
+- Build a fast-feedback UI to encourage user trust
 
-In the Client directory:
-- `npm run dev` - Start the development server
-- `npm run build` - Build for production
-- `npm run test` - Run tests
+### Known Limitations
 
-## Submission
+- No persistent message history — each query is stateless
+- Embedding model and prompt are static — not dynamically tuned
+- Transcript must be pre-cleaned `.txt` with speaker tagging (0/1 only)
+- Currently optimized for short-to-medium length transcripts
 
-When you're done:
-1. Push your changes to your fork of this repository and make it public
-2. Send us the link to your repository
-3. Include any additional notes or documentation about your implementation
 
-Good luck!
+### Project architecture
+--
+
+                    +------------------+
+                    |  Upload Transcript |
+                    +---------+--------+
+                              |
+                              v
+                  +-----------+------------+
+                  |  Backend (NestJS API)  |
+                  +-----------+------------+
+                              |
+      +-----------------------+-----------------------+
+      |                       |                       |
+      v                       v                       v
++-------------+      +------------------+     +------------------+
+|  Chunk Text |      | Embed w/ OpenAI  |     |  Store in PG w/  |
+| (Speaker 0/1)| ---> |  Embeddings API | --> |   pgvector index |
++-------------+      +------------------+     +------------------+
+
+User asks question
+         |
+         v
++------------------+
+|  Vector Search   |
+| (KNN over chunks)|
++--------+---------+
+         |
+         v
++------------------------------+
+|  LangChain + LLM (ChatOpenAI)|
++--------+---------------------+
+         |
+         v
++------------------------------+
+|  Answer w/ quotes + speaker  |
++------------------------------+
+
+         |
+         v
++---------------------+
+| Chakra UI Frontend  |
+|  (Chat + Upload UI) |
++---------------------+
+
+--
+
+### What's next?
+To evolve this prototype into a more production-ready system, I’d extend both the backend and frontend in the following ways:
+
+#### API Enhancements
+##### Message history and threading
+Store previous Q&A interactions to support context-aware follow-up questions (chat-style memory).
+
+##### Transcript-level summarization + indexing
+Embed full-session summaries in addition to per-chunk embeddings to support hierarchical retrieval.
+
+##### Multi-patient and conversation support
+Expand schema to associate multiple transcripts with distinct patients and conversations, with optional metadata (session date, tags, clinician ID, etc.).
+
+##### Prompt routing / dynamic RAG orchestration
+Swap out the hardcoded prompt template for a system that selects or adapts prompts based on question type, chunk context, or speaker intent.
+
+##### Tool usage & function calling (optional)
+For more complex interactions, explore LangChain’s tool-using agents for follow-up or clarification queries.
+
+
+#### Client Enhancements
+##### Streaming response support
+Stream token-by-token output to the UI using Server-Sent Events (SSE) or WebSockets for faster perceived performance on long completions.
+
+##### More flexible file import
+Support .docx, .pdf, or even .csv if therapists are exporting from EHRs or notetaking tools.
+
+##### Editable conversation view
+Allow clinicians to annotate or correct quotes in the UI (e.g. labeling missed speaker switches, marking sensitive moments).
+
+##### Quote highlighting + source linking
+Visually link the agent’s quote references back to their original transcript chunk with highlighting or click-to-jump behavior.
+
+##### Mobile-friendly layout
+Improve responsiveness for clinicians or users reviewing transcripts on tablets or phones.
