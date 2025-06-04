@@ -61,9 +61,19 @@ In the Client directory:
 
 This project implements a lightweight Retrieval-Augmented Generation (RAG) system designed to answer questions about therapy transcripts. Transcripts are uploaded via a file interface, chunked into speaker-labeled segments, embedded using OpenAI's embedding model, and stored in a Postgres database with pgvector. At query time, a user can ask a question via a simple chat interface; relevant chunks are retrieved by vector similarity and passed to a language model (via LangChain) to synthesize a speaker-aware response with direct quote attribution.
 
+### Examples: AI Agent in Action
 
-![Hosted Image](agent-in-action.png)
+#### Example 1: How is Lucy disconnected at home?
+![Example 1 AI Agent](agent-in-action-part-1.png)
+*The agent concludes Lucy is feeling "Alone and Invisible" and references quotes*
 
+---
+
+#### Example 2: How is Lucy doing in general?
+![Example 2 AI Agent](agent-in-action-part-2.png)
+*The agent summarizes Lucy's emotional state, referencing motivation struggles, and her desire to improve*
+
+---
 
 ### Design Goals
 
