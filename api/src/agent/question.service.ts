@@ -34,6 +34,7 @@ export class QuestionService {
   async ask(
     question: string,
     transcriptId?: string,
+    limit: number = 5,
   ): Promise<z.infer<typeof ResponseSchema>> {
     const questionEmbedding = await this.embedService.embedChunks([question]);
     const vector = questionEmbedding[0];
@@ -46,7 +47,7 @@ export class QuestionService {
 
     const matches = await query
       .orderBy(sql<number>`embedding <-> ${this.pgvector(vector)}`)
-      .limit(5)
+      .limit(limit)
       .execute();
 
     if (matches.length === 0) {
@@ -66,7 +67,7 @@ export class QuestionService {
     Your response should include:
     - A brief summary answering the question in 1-2 sentences.
     - Attributed direct quotes from the transcript that support your answer.
-    - Use clear formatting for quotes: **[Speaker]:** *\"Quote here\"*
+    - Use clear formatting for quotes: **[Speaker]:** *"Quote here"*
 
     TRANSCRIPT:
     ${contextText}

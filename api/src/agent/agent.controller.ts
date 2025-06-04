@@ -9,7 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { AgentService } from './agent.service';
-import { AskQuestionDto } from './dto/ask-question.dto';
+import { AskQuestionDto, AskResponseDto } from './dto/ask-question.dto';
 
 @Controller('agent')
 export class AgentController {
@@ -20,13 +20,11 @@ export class AgentController {
     try {
       await this.agentService.indexTranscript(transcriptId, 'recursive');
       return { message: `Indexed transcript: ${transcriptId}`, status: 'ok' };
-    } catch (err) {
-      if (err instanceof HttpException) {
-        throw err;
-      }
+    } catch (err: unknown) {
+      if (err instanceof HttpException) throw err;
 
       throw new HttpException(
-        `Unexpected error while indexing "${transcriptId}": ${err.message}`,
+        `Unexpected error while indexing "${transcriptId}"`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -38,20 +36,27 @@ export class AgentController {
     @Body('content') content: string,
   ) {
     if (!content?.trim()) {
-      throw new HttpException('Transcript content is required.', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Transcript content is required.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     try {
-      await this.agentService.indexTranscriptFromContent(transcriptId, content, 'recursive');
+      await this.agentService.indexTranscriptFromContent(
+        transcriptId,
+        content,
+        'recursive',
+      );
       return {
         message: `Indexed transcript: ${transcriptId}`,
         status: 'ok',
       };
-    } catch (err) {
+    } catch (err: unknown) {
       if (err instanceof HttpException) throw err;
 
       throw new HttpException(
-        `Unexpected error while uploading "${transcriptId}": ${err.message}`,
+        `Unexpected error while uploading "${transcriptId}"`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -59,7 +64,7 @@ export class AgentController {
 
   @Post('ask')
   @HttpCode(200)
-  async ask(@Body() body: AskQuestionDto) {
+  async ask(@Body() body: AskQuestionDto): Promise<AskResponseDto> {
     const { question, transcriptId } = body;
     try {
       const result = await this.agentService.askQuestion(
@@ -67,9 +72,11 @@ export class AgentController {
         transcriptId,
       );
       return result;
-    } catch (err) {
+    } catch (err: unknown) {
+      if (err instanceof HttpException) throw err;
+
       throw new HttpException(
-        `Failed to answer question: ${err.message}`,
+        'Failed to answer question: Unknown error',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

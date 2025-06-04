@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { db } from './db/db';
-import * as fs from 'fs/promises';
-import * as path from 'path';
 
 @Injectable()
 export class AppService {

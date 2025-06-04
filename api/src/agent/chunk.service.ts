@@ -23,8 +23,6 @@ export class ChunkService {
         return this.chunkBySpeakerOnly(text);
       case 'recursive':
         return this.chunkRecursively(text);
-      default:
-        throw new Error(`Unsupported chunking strategy: ${strategy}`);
     }
   }
 

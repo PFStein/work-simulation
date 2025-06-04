@@ -3,7 +3,8 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
-import { db } from 'src/db/db';
+import { db } from './../src/db/db';
+import { AskResponseDto } from 'src/agent/dto/ask-question.dto';
 
 describe('AgentController (e2e)', () => {
   let app: INestApplication<App>;
@@ -29,7 +30,7 @@ describe('AgentController (e2e)', () => {
     expect(res.status).toBe(201);
     expect(res.body).toEqual({
       message: `Indexed transcript: ${transcriptId}`,
-      status: 'ok'
+      status: 'ok',
     });
   });
 
@@ -42,7 +43,7 @@ describe('AgentController (e2e)', () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('summary');
     expect(res.body).toHaveProperty('quotes');
-    expect(Array.isArray(res.body.quotes)).toBe(true);
+    expect(Array.isArray((res.body as AskResponseDto).quotes)).toBe(true);
   });
 
   it('should return 409 for duplicate transcript upload', async () => {
@@ -57,6 +58,6 @@ describe('AgentController (e2e)', () => {
       .send({ content: '[Speaker:1] Hello again.' });
 
     expect(res.status).toBe(409);
-    expect(res.body.message).toMatch(/already exists/);
+    expect((res.body as { message: string }).message).toMatch(/already exists/);
   });
 });

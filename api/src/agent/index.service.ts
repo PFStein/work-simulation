@@ -19,9 +19,12 @@ export class IndexService {
         .executeTakeFirstOrThrow();
 
       return result.id;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown database error';
+
       throw new Error(
-        `Failed to insert transcript "${transcriptTitle}": ${error?.message ?? 'Unknown database error'}`,
+        `Failed to insert transcript "${transcriptTitle}": ${message}`,
       );
     }
   }

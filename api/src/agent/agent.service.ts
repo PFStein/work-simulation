@@ -55,7 +55,11 @@ export class AgentService {
   }
 
   // Used when using file upload in chat interface
-  async indexTranscriptFromContent(transcriptTitle: string, rawText: string, strategy: ChunkingStrategy = 'recursive') {
+  async indexTranscriptFromContent(
+    transcriptTitle: string,
+    rawText: string,
+    strategy: ChunkingStrategy = 'recursive',
+  ) {
     // Check for duplicate transcript
     const existing = await db
       .selectFrom('transcripts')
@@ -64,17 +68,26 @@ export class AgentService {
       .executeTakeFirst();
 
     if (existing) {
-      throw new ConflictException(`Transcript titled "${transcriptTitle}" already exists.`);
+      throw new ConflictException(
+        `Transcript titled "${transcriptTitle}" already exists.`,
+      );
     }
 
-    const transcriptId = await this.indexService.saveTranscript(transcriptTitle, rawText);
+    const transcriptId = await this.indexService.saveTranscript(
+      transcriptTitle,
+      rawText,
+    );
 
     try {
       const chunks: Chunk[] = await this.chunkService.chunk(rawText, strategy);
-      const vectors = await this.embedService.embedChunks(chunks.map(c => c.content));
+      const vectors = await this.embedService.embedChunks(
+        chunks.map((c) => c.content),
+      );
       await this.indexService.saveChunks(transcriptId, chunks, vectors);
     } catch (err) {
-      throw new Error(`Transcript "${transcriptTitle}" failed to index with strategy "${strategy}": ${err}`);
+      throw new Error(
+        `Transcript "${transcriptTitle}" failed to index with strategy "${strategy}": ${err}`,
+      );
     }
   }
 

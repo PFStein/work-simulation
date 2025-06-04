@@ -8,3 +8,13 @@ export class AskQuestionDto {
   @IsString()
   transcriptId?: string;
 }
+
+export class QuoteDto {
+  speaker: string;
+  quote: string;
+}
+
+export class AskResponseDto {
+  summary: string;
+  quotes: QuoteDto[];
+}
