@@ -73,10 +73,9 @@ This project implements a lightweight Retrieval-Augmented Generation (RAG) syste
 
 
 ### Project architecture
---
-
+```
                     +------------------+
-                    |  Upload Transcript |
+                    | Upload Transcript |
                     +---------+--------+
                               |
                               v
@@ -116,8 +115,7 @@ User asks question
 | Chakra UI Frontend  |
 |  (Chat + Upload UI) |
 +---------------------+
-
---
+```
 
 ### What's next?
 To evolve this prototype into a more production-ready system, I’d extend both the backend and frontend in the following ways:
