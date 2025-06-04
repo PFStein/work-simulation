@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:15
+    image: pgvector/pgvector:pg15
     container_name: blueprint-db
     environment:
       POSTGRES_USER: postgres
@@ -22,7 +22,9 @@ services:
       - ./api:/app
       - /app/node_modules
     environment:
+      - NODE_ENV=development
       - DATABASE_URL=postgres://postgres:postgres@db:5432/appdb
+      - "OPENAI_API_KEY=${OPENAI_API_KEY}"
     depends_on:
       - db
 
