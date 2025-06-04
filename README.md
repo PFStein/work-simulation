@@ -86,10 +86,10 @@ This project implements a lightweight Retrieval-Augmented Generation (RAG) syste
       +-----------------------+-----------------------+
       |                       |                       |
       v                       v                       v
-+-------------+      +------------------+     +------------------+
-|  Chunk Text |      | Embed w/ OpenAI  |     |  Store in PG w/  |
-| (Speaker 0/1)| ---> |  Embeddings API | --> |   pgvector index |
-+-------------+      +------------------+     +------------------+
++--------------+      +------------------+     +------------------+
+|  Chunk Text  |      | Embed w/ OpenAI  |     |  Store in PG w/  |
+| (Speaker 0/1)| ---> |  Embeddings API  | --> |   pgvector index |
++--------------+      +------------------+     +------------------+
 
 User asks question
          |
